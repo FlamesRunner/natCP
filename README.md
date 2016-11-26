@@ -2,6 +2,14 @@
 
 A free open source OpenVZ panel tailored for NAT containers
 
+##Screenshots
+
+![](http://i.imgur.com/4rGkCvw.png)
+
+![](http://i.imgur.com/pLKs4OS.png)
+
+![](http://i.imgur.com/bhEVHBR.png)
+
 ##Installation:
 
 ###Slave node installation#
