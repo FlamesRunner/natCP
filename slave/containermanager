@@ -1,0 +1,293 @@
+#!/bin/bash
+
+#
+#  This script allows you to modify containers as needed.
+#  Creating/destroying is supported, as well as many other management options.
+#
+
+case "$1" in
+help)
+echo "Syntax for ContainerManager:"
+echo "start/stop/restart CTID - power control to containers"
+echo "create CTID os - creates a new container"
+echo "reinstall CTID os - reinstalls a container"
+echo "net-init CTID - initializes default IPs"
+echo "destroy CTID - removes a container"
+echo "resetpass CTID - resets root password"
+echo "list - shows running containers"
+echo "status CTID - shows power level"
+echo "getos CTID - find operating system"
+echo "memusage CTID - obtains memory usage"
+echo "diskusage CTID - obtains disk usage"
+echo "tuntap CTID 1/0 - toggle tun/tap adapters"
+echo "checktun CTID - check if tun is enabled"
+;;
+
+checktun)
+if [ -z "$2" ]; then
+echo "Error: CTID not specified."
+echo "Usage: /sbin/containermanager checktun ctid"
+elif [ ! -f "/etc/vz/conf/$2.conf" ]; then
+echo "Container does not exist. Halting."
+else
+config=`cat /etc/vz/conf/$2.conf | grep "net/tun:rw"`
+if [ -z "$config" ]; then
+echo "off"
+else
+echo "on"
+fi
+fi
+;;
+
+tuntap)
+
+if [ -z "$2" ]; then
+echo "Error: CTID not specified."
+echo "Usage: /sbin/containermanager tuntap ctid 0/1"
+elif [ ! -f "/etc/vz/conf/$2.conf" ]; then
+echo "Container does not exist. Halting."
+elif [ -z "$3" ]; then
+echo "Error: Boolean value must be specified."
+echo "Usage: /sbin/containermanager ctid 0/1"
+else
+
+if [ "$3" == "1" ]; then
+vzctl set $2 --devnodes net/tun:rw --save
+vzctl stop $2 &> /dev/null
+vzctl set $2 --capability net_admin:on --save &> /dev/null
+vzctl start $2 &> /dev/null
+vzctl exec $2 mkdir -p /dev/net &> /dev/null
+vzctl exec $2 chmod 600 /dev/net/tun &> /dev/null
+echo "Success."
+elif [ "$3" == "0" ]; then
+vzctl exec $2 rm -rf /dev/net/tun &> /dev/null
+vzctl set $2 --devnodes net/tun:r --save &> /dev/null
+echo "Success."
+else
+echo "Error: Invalid value specified."
+echo "Usage: /sbin/containermanager ctid 0/1"
+fi
+fi
+
+;;
+
+diskusage)
+if [ -z "$2" ]; then
+echo "Error: CTID not specified."
+echo "Usage: /sbin/containermanager diskusage ctid"
+elif [ ! -f "/etc/vz/conf/$2.conf" ]; then
+echo "Container does not exist. Halting."
+else
+/sbin/get_used_disk $2
+fi
+;;
+
+getos)
+
+if [ -z "$2" ]; then
+echo "Error: CTID not specified."
+echo "Usage: /sbin/containermanager getos ctid"
+elif [ ! -f "/etc/vz/conf/$2.conf" ]; then
+echo "Container does not exist. Halting."
+else
+config=`cat /etc/vz/conf/$2.conf | grep 'OSTEMPLATE='`
+getos=`echo $config | sed 's/.*"\(.*\)"[^"]*$/\1/'`
+echo $getos
+fi
+
+;;
+
+memusage)
+
+if [ -z "$2" ]; then
+echo "Error: CTID not specified."
+echo "Usage: /sbin/containermanager memusage ctid"
+elif [ ! -f "/etc/vz/conf/$2.conf" ]; then
+echo "Container does not exist. Halting."
+else
+
+usage=`/sbin/ct_getusage $2`
+limit=`/sbin/ct_getlimit $2`
+calc=`echo "scale = 2; $usage / $limit" | bc`
+percentage=`echo "scale = 2; $calc * 100" | bc`
+echo $percentage
+fi
+
+;;
+
+list)
+echo "Showing running containers:"
+vzlist
+;;
+
+start)
+
+if [ -z "$2" ]; then
+echo "Error: CTID not specified."
+echo "Usage: /sbin/containermanager start ctid"
+elif [ ! -f "/etc/vz/conf/$2.conf" ]; then
+echo "Container does not exist. Halting."
+else
+echo "Starting container $2..."
+vzctl start $2
+fi
+
+;;
+
+stop)
+
+if [ -z "$2" ]; then
+echo "Error: CTID not specified."
+echo "Usage: /sbin/containermanager stop ctid"
+elif [ ! -f "/etc/vz/conf/$2.conf" ]; then
+echo "Container does not exist. Halting."
+else
+echo "Stopping container $2..."
+vzctl stop $2
+fi
+
+;;
+
+restart)
+
+if [ -z "$2" ]; then
+echo "Error: CTID not specified."
+echo "Usage: /sbin/containermanager restart ctid"
+elif [ ! -f "/etc/vz/conf/$2.conf" ]; then
+echo "Container does not exist. Halting."
+else
+/sbin/containermanager stop $2
+/sbin/containermanager start $2
+fi
+
+;;
+
+resetpass)
+
+if [ -z "$2" ]; then
+echo "Error: CTID not specified."
+echo "Usage: /sbin/containermanager resetpass ctid "
+else
+newpass=$(od -N 8 -t uL -An /dev/urandom | tr -d " ")
+vzctl set $2 --userpasswd root:$newpass &> /dev/null
+echo "$newpass"
+fi
+;;
+
+create)
+
+if [ -z "$2" ]; then
+echo "Error: CTID not specified."
+echo "Usage: /sbin/containermanager create ctid os"
+elif [ -f "/etc/vz/conf/$2.conf" ]; then
+echo "Container already exists. Halting."
+elif [ -z "$3" ]; then
+echo "Error: No operating system specified."
+echo "Usage: /sbin/containermanager create ctid os"
+else
+echo "Creating container with the ID $2..."
+vzctl create $2 --ostemplate $3 --hostname ct$2
+/sbin/containermanager start $2
+vzctl set $2 --devnodes fuse:rw --save &> /dev/null
+echo "Success. Consider running /sbin/containermanager net-init $2 to add defaul                                                                                                                                                             t IP addresses."
+
+fi
+
+;;
+
+destroy)
+if [ -z "$2" ]; then
+echo "Error: CTID not specified."
+echo "Usage: /sbin/containermanager destroy ctid"
+elif [ ! -f "/etc/vz/conf/$2.conf" ]; then
+echo "Container does not exist. Halting."
+else
+echo "Destroying container..."
+vzctl stop $2
+vzctl destroy $2
+fi
+;;
+
+net-init)
+
+if [ -z "$2" ]; then
+echo "Error: CTID not specified."
+echo "Usage: /sbin/containermanager net-init ctid"
+elif [ ! -f "/etc/vz/conf/$2.conf" ]; then
+echo "Container does not exist. Halting."
+else
+ovzconfig=`cat /etc/vz/conf/$2.conf | grep 'IP_ADDRESS='`
+if [ ! -z "$ovzconfig" ]; then
+echo "Refusing to run as network settings have been previously modified."
+else
+echo "Adding 10.42.1.$2 as the private IPv4 address..."
+vzctl set $2 --ipadd 10.42.1.$2 --save
+echo "Adding 2001:470:c:d42:0:1:1:$2 as the public IPv6 address..."
+vzctl set $2 --ipadd 2001:470:c:d42:0:1:1:$2 --save
+echo "Setting up a NAT rule..."
+/sbin/nat 10.42.1.$2 200$2 22
+echo "Success!"
+fi
+fi
+
+;;
+
+reinstall)
+
+if [ -z "$2" ]; then
+echo "Error: CTID not specified."
+echo "Usage: /sbin/containermanager reinstall ctid os"
+elif [ -z "$3" ]; then
+echo "Error: Template not specified."
+echo "Usage: /sbin/containermanager reinstall ctid os"
+else
+
+if [ ! -f "/etc/vz/conf/$2.conf" ]; then
+
+echo "Container does not exist. Halting."
+
+else
+
+echo "Backing up container data..."
+rm -rf /tmp/$2.conf.bak
+cp /etc/vz/conf/$2.conf /tmp/$2.conf.bak
+ipaddresses=`cat /etc/vz/conf/$2.conf | grep 'IP_ADDRESS='`
+echo "Shutting down the container..."
+vzctl stop $2
+echo "Destroying the container..."
+vzctl destroy $2
+echo "Creating a new container..."
+vzctl create $2 --ostemplate $3 --hostname ct$2
+echo "$ipaddresses" >> /etc/vz/conf/$2.conf
+vzctl start $2
+vzctl set $2 --devnodes fuse:rw --save &> /dev/null
+echo "Reinstallation was successful."
+fi
+fi
+
+;;
+
+status)
+if [ -z "$2" ]; then
+echo "Error: No CTID specified."
+echo "Usage: /sbin/containermanager status CTID"
+elif [ ! -f "/etc/vz/conf/$2.conf" ]; then
+echo "Container does not exist. Halting."
+else
+
+status=`vzctl status $2`
+running=`echo "$status" | grep "running"`
+
+if [ -z "$running" ]; then
+echo "Offline."
+else
+echo "Online."
+fi
+
+fi
+;;
+
+*) echo "The command you entered was invalid. Type /sbin/containermanager help f                                                                                                                                                             or the usage."
+;;
+esac
+

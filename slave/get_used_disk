@@ -1,0 +1,7 @@
+#!/bin/bash
+if [ -z "$1" ]; then
+echo "Missing CTID"
+else
+/usr/sbin/vzctl exec $1 df -hl | grep 'simfs' | awk 'BEGIN{"Use%"} {percent+=$5;} END{print size,percent}' | column -t
+fi
+

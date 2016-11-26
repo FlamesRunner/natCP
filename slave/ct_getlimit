@@ -1,0 +1,22 @@
+#!/bin/bash
+if [ -z "$1" ]; then
+echo "Usage: /sbin/ct_getlimit ctid"
+exit 0
+fi
+
+status=$(/sbin/containermanager status $1 | grep "Online")
+if [ -z "$status" ]; then
+echo "1"
+exit 0
+fi
+
+if [ -d "/vz/private/$1" ]; then
+mem=$(/usr/sbin/vzctl exec $1 cat /proc/user_beancounters | grep physpages)
+limit=$(echo $mem | awk '{ print $5 }')
+kbmem=$(/usr/bin/expr $limit \* 4)
+mbmem=$(/usr/bin/expr $kbmem / 1024)
+echo $mbmem
+else
+echo "CTID invalid (container does not exist)"
+fi
+
