@@ -3,8 +3,11 @@
 #
 #  This script allows you to modify containers as needed.
 #  Creating/destroying is supported, as well as many other management options.
-#
+#  Remove the last octet starting at the tildes and ending at the second (2001:0db8:85a3:0000:0000:8a2e:0370~:7334~
+#  For the private IPv4 range, just remove everything after the last period.
 
+$PRIV_IP='10.42.1'
+$PUB_V6='2001:0db8:85a3:0000:0000:8a2e:0370' 
 case "$1" in
 help)
 echo "Syntax for ContainerManager:"
@@ -220,12 +223,12 @@ ovzconfig=`cat /etc/vz/conf/$2.conf | grep 'IP_ADDRESS='`
 if [ ! -z "$ovzconfig" ]; then
 echo "Refusing to run as network settings have been previously modified."
 else
-echo "Adding 10.42.1.$2 as the private IPv4 address..."
-vzctl set $2 --ipadd 10.42.1.$2 --save
-echo "Adding 2001:470:c:d42:0:1:1:$2 as the public IPv6 address..."
-vzctl set $2 --ipadd 2001:470:c:d42:0:1:1:$2 --save
+echo "Adding $PRIV_IP.$2 as the private IPv4 address..."
+vzctl set $2 --ipadd $PRIV_IP.$2 --save
+echo "Adding $PUB_V6::$2 as the public IPv6 address..."
+vzctl set $2 --ipadd $PUB_V6::$2 --save
 echo "Setting up a NAT rule..."
-/sbin/nat 10.42.1.$2 200$2 22
+/sbin/nat $PRIV_IP.$2 $PORTPREFIX$2 22
 echo "Success!"
 fi
 fi
