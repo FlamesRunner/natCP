@@ -189,7 +189,7 @@ echo "Creating container with the ID $2..."
 vzctl create $2 --ostemplate $3 --hostname ct$2
 /sbin/containermanager start $2
 vzctl set $2 --devnodes fuse:rw --save &> /dev/null
-echo "Success. Consider running /sbin/containermanager net-init $2 to add defaul                                                                                                                                                             t IP addresses."
+echo "Success. Consider running /sbin/containermanager net-init $2 to add default IP addresses."
 
 fi
 
@@ -287,7 +287,7 @@ fi
 fi
 ;;
 
-*) echo "The command you entered was invalid. Type /sbin/containermanager help f                                                                                                                                                             or the usage."
+*) echo "The command you entered was invalid. Type /sbin/containermanager help for the usage."
 ;;
 esac
 
