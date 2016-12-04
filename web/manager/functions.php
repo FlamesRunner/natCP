@@ -10,9 +10,9 @@ if (!$ssh->login(NODE_USERNAME, NODE_PASSWORD)) {
 
 $var = trim($ssh->exec('/usr/bin/sudo /sbin/containermanager status ' . $ctid));
 if (strpos($var, 'Online') !== false){
-echo '<td><span class="label label-success">Online</span></td>';
+echo '<span class="status-light sl-green"> </span> ONLINE';
 } else {
-echo '<td><span class="label label-danger">Offline</span></td>';
+echo '<span class="status-light sl-red"></span> OFFLINE';
 }
 
 }
