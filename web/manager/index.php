@@ -19,7 +19,7 @@ $administrator = 'true';
 <hr>
 <?php
 if (!empty($administrator)){
-echo '<div class="alert alert-info"><b>Notice:</b> You are logged in as an administrator. Click <a href="/vpscp/admin">here</a> to visit the administration panel.</div>';
+echo '<div class="alert alert-info"><b>Notice:</b> You are logged in as an administrator. Click <a href="/admin">here</a> to visit the administration panel.</div>';
 }
 ?>
 <p>Welcome to natCP. Click the 'Virtual Servers' tab to manage your virtual servers.</p>

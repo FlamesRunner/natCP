@@ -9,7 +9,7 @@ $checknode->bindParam(':hostname', $_GET['node']);
 $checknode->execute();
 
 if (!$checknode->rowCount() > 0){
-header('Location: /vpscp/admin/templatemgr.php');
+header('Location: '.dirname(1).'/templatemgr.php');
 }
 }
 

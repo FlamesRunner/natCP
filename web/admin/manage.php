@@ -39,7 +39,7 @@ $destroy = $dbh->prepare('DELETE from virtualservers where ctid=:ctid');
 $destroy->bindParam(':ctid', $_GET['vserver']);
 $destroy->execute();
 destroy($_GET['vserver'], $nodeid);
-header("Location: /vpscp/admin/listvps.php");
+header('Location: '.dirname(1).'/listvps.php');
 } elseif ($_GET['act'] == "togglesuspension"){
 
 if ($status == "active"){ 

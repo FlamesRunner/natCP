@@ -13,12 +13,12 @@ $rowdata = $gu->fetch();
 $user = $rowdata["user_name"];
 
 if ($_GET['id'] == 1){
-header('Location: /vpscp/admin/usermanager.php');
+header('Location: '.dirname(1).'/usermanager.php');
 die('Invalid user.');
 }
 
 if (!$gu->rowCount() > 0) {
-header('Location: /vpscp/admin/usermanager.php');
+header('Location: '.dirname(1).'/usermanager.php');
 die('Invalid user.');
 }
 
@@ -44,7 +44,7 @@ if ($err == 0){
 $delete = $dbh->prepare('DELETE FROM users where user_id=:userid');
 $delete->bindParam(':userid', $_GET['id']);
 $delete->execute();
-header('Location: /vpscp/admin/usermanager.php');
+header('Location: '.dirname(1).'/usermanager.php');
 die();
 }
 }

@@ -12,7 +12,7 @@ $rowdata = $gu->fetch();
 $hostname = $rowdata["hostname"];
 
 if (!$gu->rowCount() > 0) {
-header('Location: /vpscp/admin/nodemanager.php');
+header('Location: '.dirname(1).'/nodemanager.php');
 die('Invalid node ID.');
 }
 
@@ -33,7 +33,7 @@ if ($err == 0){
 $delete = $dbh->prepare('DELETE FROM nodes where id=:nodeid');
 $delete->bindParam(':nodeid', $_GET['id']);
 $delete->execute();
-header('Location: /vpscp/admin/nodemanager.php');
+header('Location: '.dirname(1).'/nodemanager.php');
 die();
 }
 }

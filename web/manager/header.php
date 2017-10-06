@@ -26,10 +26,10 @@
          </div>
          <div class="collapse navbar-collapse" id="sys-navbar-collapse">
             <ul class="nav navbar-nav">
-               <li><a style="color:white;" href="/vpscp/manager">Home</a></li>
-               <li><a style="color:white;" href="/vpscp/manager/listvps.php">Virtual Servers</a></li>
-               <li><a style="color:white;" href="/vpscp/manager/myaccount.php">My account</a></li>
-               <li><a style="color:white;" href="/vpscp/?logout">Log Out</a></li>
+               <li><a style="color:white;" href="/manager">Home</a></li>
+               <li><a style="color:white;" href="/manager/listvps.php">Virtual Servers</a></li>
+               <li><a style="color:white;" href="/manager/myaccount.php">My account</a></li>
+               <li><a style="color:white;" href="/?logout">Log Out</a></li>
                <span id="navmsg"></span>
             </ul>
          </div>

@@ -25,13 +25,13 @@
          </div>
          <div class="collapse navbar-collapse" id="sys-navbar-collapse">
             <ul class="nav navbar-nav">
-         <li><a style="color:white;" href="/vpscp/admin">Admin Home</a></li>
-         <li><a style="color:white;" href="/vpscp/admin/listvps.php">Virtual Servers</a></li>
-         <li><a style="color:white;" href="/vpscp/admin/usermanager.php">User Manager</a></li>
-         <li><a style="color:white;" href="/vpscp/admin/nodemanager.php">Node Manager</a>
-         <li><a style="color:white;" href="/vpscp/admin/templatemgr.php">Template Manager</a></li>
-         <li><a style="color:white;" href="/vpscp/admin/networkmanager.php">Network Manager</a>
-         <li><a style="color:white;" href="/vpscp/manager">Return to userCP</a></li>
+         <li><a style="color:white;" href="/admin">Admin Home</a></li>
+         <li><a style="color:white;" href="/admin/listvps.php">Virtual Servers</a></li>
+         <li><a style="color:white;" href="/admin/usermanager.php">User Manager</a></li>
+         <li><a style="color:white;" href="/admin/nodemanager.php">Node Manager</a>
+         <li><a style="color:white;" href="/admin/templatemgr.php">Template Manager</a></li>
+         <li><a style="color:white;" href="/admin/networkmanager.php">Network Manager</a>
+         <li><a style="color:white;" href="/manager">Return to userCP</a></li>
                <span id="navmsg"></span>
             </ul>
          </div>
