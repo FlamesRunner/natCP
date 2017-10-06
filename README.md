@@ -4,7 +4,11 @@ A free open source OpenVZ panel.
 
 ## Screenshots
 
-Coming soon.
+Listing virtual servers from the administrator panel:
+![](https://s.flamz.pw/img/92ad6ee5e62bdbc31e035f04bda88637.png)
+
+Managing a virtual server as a standard user:
+![](https://s.flamz.pw/img/17f029d8aaee5b10ac9c4b86f7be64e3.png)
 
 ## Slave node installation
 
