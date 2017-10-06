@@ -33,4 +33,4 @@ mkdir -p /srv/containers
 echo -e "$newPassword\n$newPassword" | passwd remote
 echo 'remote ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 echo "-> Slave node configured. Here are the slave details:"
-echo -> Access key: $newPassword"
+echo "-> Access key: $newPassword"
