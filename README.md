@@ -2,11 +2,11 @@
 
 A free open source OpenVZ panel.
 
-###Screenshots
+#Screenshots
 
 Coming soon.
 
-###Slave node installation
+#Slave node installation
 
 Installing natCP on a slave node is easy.
 Log on as the root user, and execute the following command:
@@ -16,7 +16,7 @@ Log on as the root user, and execute the following command:
 
 That's it. Make sure you save the slave access key, though!
 
-###Host node installation
+#Host node installation
 
 Coming soon.
 
