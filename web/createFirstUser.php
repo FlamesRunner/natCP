@@ -1,4 +1,7 @@
 <?php
+// DO NOT MODIFY UNLESS YOU KNOW WHAT YOU'RE DOING.
+// FAILIURE TO COMPLY MAY RESULT IN AN INOPERABLE SYSTEM.
+
 require 'manager/db.php';
 
 function generatePassword($length = 8) {
