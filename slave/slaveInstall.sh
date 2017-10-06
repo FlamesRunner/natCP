@@ -12,7 +12,7 @@ echo "----> Installing natCP v0.5 slave   "
 echo "-> You have 10 seconds to cancel.   "
 echo " "
 
-if [ -e "/etc/centos-release" ]; then
+if [ ! -e "/etc/centos-release" ]; then
 echo "Warning: Only servers running CentOS 6.x are supported."
 exit 1
 fi
