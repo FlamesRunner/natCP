@@ -2,11 +2,11 @@
 
 A free open source OpenVZ panel.
 
-#Screenshots
+## Screenshots
 
 Coming soon.
 
-#Slave node installation
+## Slave node installation
 
 Installing natCP on a slave node is easy.
 Log on as the root user, and execute the following command:
@@ -16,9 +16,17 @@ Log on as the root user, and execute the following command:
 
 That's it. Make sure you save the slave access key, though!
 
-#Host node installation
+## Host node installation
 
-Coming soon.
+Host node installation is a little more complicated.
+First, you'll need to install a LEMP stack on your server. It's assumed that you already know how to do this.
+
+Then, download the web directory, and move the contents to your NGINX web directory.
+Afterwards, restore the MySQL table named 'restoreThis.sql' within the web directory into a database of your choice.
+
+Enter your database details into the configuration file at the root of your web directory, and that should be it.
+
+Last thing: To create your first user, please use the utility stored in the web directory, named 'createFirstUser.php' from the command line. An administrative user will be created using your database details and once you've logged in, you'll have the chance to change the password.
 
 ---
 Want to donate? Send me a few dollars via PayPal: andrew@andrew-hong.me
