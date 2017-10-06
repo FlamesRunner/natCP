@@ -14,6 +14,11 @@ $err = 1;
 $msg = "Username too long (greater than 64 characters).";
 }
 
+if (!ctype_alnum($_POST['username'])){
+$err = 1;
+$msg = "Username must be alphanumeric.";
+}
+
 if (strlen($_POST['password']) <= 6){
 $err = 1;
 $msg = "Password too short (shorter than 6 characters).";

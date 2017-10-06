@@ -1,5 +1,5 @@
 <?php
 include 'config.php';
-$dbh = new PDO('mysql:host=localhost;dbname=natvpsdata', $sql_user, $sql_pass);
+$dbh = new PDO('mysql:host='. HOST .';dbname=' . DATABASE, USER, PASSWORD);
 ?>
 

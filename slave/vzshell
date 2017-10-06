@@ -1,0 +1,5 @@
+#!/bin/bash
+ctid=`cat /srv/consoleusers/$USER/ctid`
+echo "natCP <version 0.1> console"
+sudo /sbin/vzenter $ctid
+

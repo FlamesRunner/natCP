@@ -3,7 +3,7 @@ session_start();
 include 'db.php';
 
 if (empty($_SESSION['user_name'])){
-header("Location: /?logout");
+header("Location: /vpscp/?logout");
 die();
 }
 
@@ -12,7 +12,7 @@ $checkrank->bindParam(':userdata', $_SESSION['user_name']);
 $checkrank->execute();
 
 if (!$checkrank->rowCount() > 0){
-header("Location: /?logout");
+header("Location: /vpscp/?logout");
 }
 ?>
 

@@ -1,7 +1,4 @@
 <?php
-// Registration disabled. Enable if you wish.
-
-/*
 // show potential errors / feedback (from registration object)
 if (isset($registration)) {
     if ($registration->errors) {
@@ -39,4 +36,3 @@ if (isset($registration)) {
 
 <!-- backlink -->
 <a href="index.php">Back to Login Page</a>
-<?php */ ?>

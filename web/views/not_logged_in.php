@@ -58,7 +58,7 @@ $btn = "LOG IN";
         </form>
         <form method="post" id="links">
           <div class="footerlink">
-            <a href="andrew@andrew-hong.me" class="footerlink">NEED ASSISTANCE?
+            <a href="mailto:andrew@andrew-hong.me" class="footerlink">NEED ASSISTANCE?
             
           </div>
           </div>

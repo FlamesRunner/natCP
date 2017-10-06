@@ -3,17 +3,17 @@
 #
 #  This script allows you to modify containers as needed.
 #  Creating/destroying is supported, as well as many other management options.
-#  Remove the last octet starting at the tildes and ending at the second (2001:0db8:85a3:0000:0000:8a2e:0370~:7334~
-#  For the private IPv4 range, just remove everything after the last period.
+#
 
-$PRIV_IP='10.42.1'
-$PUB_V6='2001:0db8:85a3:0000:0000:8a2e:0370' 
 case "$1" in
 help)
 echo "Syntax for ContainerManager:"
 echo "start/stop/restart CTID - power control to containers"
+echo "suspend/unsuspend CTID - suspension/unsuspension control to containers"
 echo "create CTID os - creates a new container"
 echo "reinstall CTID os - reinstalls a container"
+echo "suspend CTID - suspend a container"
+echo "unsuspend CTID - unsuspend container"
 echo "net-init CTID - initializes default IPs"
 echo "destroy CTID - removes a container"
 echo "resetpass CTID - resets root password"
@@ -21,9 +21,192 @@ echo "list - shows running containers"
 echo "status CTID - shows power level"
 echo "getos CTID - find operating system"
 echo "memusage CTID - obtains memory usage"
+echo "rammb CTID - obtains used RAM in MB"
 echo "diskusage CTID - obtains disk usage"
+echo "diskgb CTID - obtains disk usage in GB"
 echo "tuntap CTID 1/0 - toggle tun/tap adapters"
 echo "checktun CTID - check if tun is enabled"
+echo "serialconsole CTID 1/0 - enable/disable serial console"
+echo "checkconsole CTID - check if serial console is enabled"
+echo "retrieveconsole CTID - get details for console session"
+echo "templatemgr add/del tar_gz_location template_name / template_to_remove"
+;;
+
+rammb)
+if [ -z "$2" ]; then
+echo "Error: CTID not specified."
+echo "Usage: /sbin/containermanager rammb ctid"
+elif [ ! -f "/etc/vz/conf/$2.conf" ]; then
+echo "Container does not exist. Halting."
+else
+echo $(/sbin/ct_getusage $2)MB
+fi
+;;
+
+diskgb)
+if [ -z "$2" ]; then
+echo "Error: CTID not specified."
+echo "Usage: /sbin/containermanager diskgb ctid"
+elif [ ! -f "/etc/vz/conf/$2.conf" ]; then
+echo "Container does not exist. Halting."
+else
+diskdata=$(vzlist -a -o ctid,hostname,diskspace -s diskspace | grep "$2")
+processed=$(echo "$diskdata" | cut -f2)
+ctusagekb=$(echo "$processed" | awk -F" " '{print $3}')
+ctusage=$(echo "$ctusagekb / 1048576" | bc -l)
+echo $ctusage
+fi
+;;
+
+suspend)
+if [ -z "$2" ]; then
+echo "Error: CTID not specified."
+echo "Usage: /sbin/containermanager suspend ctid"
+elif [ ! -f "/etc/vz/conf/$2.conf" ]; then
+echo "Container does not exist. Halting."
+else
+
+vzctl stop $2
+vzctl set $2 --disabled yes --save
+
+fi
+;;
+
+unsuspend)
+if [ -z "$2" ]; then
+echo "Error: CTID not specified."
+echo "Usage: /sbin/containermanager unsuspend ctid"
+elif [ ! -f "/etc/vz/conf/$2.conf" ]; then
+echo "Container does not exist. Halting."
+else
+
+vzctl set $2 --disabled no --save
+vzctl start $2
+
+fi
+;;
+
+
+templatemgr)
+if [ -z "$2" ]; then
+echo "Action not specified. "
+echo "Usage: /sbin/containermanager templatemgr add/del tar_gz_location template_name / template_to_remove"
+echo "Example: /sbin/contaienrmanager templatemgr del centos-6"
+else
+
+if [ "$2" == "add" ]; then
+
+if [ ! -z "$3" ] && [ ! -z "$4" ]; then
+echo "Attempting to download template $4..."
+if [ -e "/vz/template/cache/$4.tar.gz" ]; then
+echo "A template by the name of $4 already exists."
+else
+wget -nv -4 $3 -O /vz/template/cache/$4.tar.gz
+echo "Done."
+fi
+else
+echo "Insufficient arguments."
+echo "Usage: /sbin/containermanager templatemgr add/del tar_gz_location template_name / template_to_remove"
+fi
+
+elif [ "$2" == "del" ]; then
+
+if [ -z "$3" ]; then
+echo "Insufficient arguments."
+echo "Usage: /sbin/containermanager templatemgr add/del tar_gz_location template_name / template_to_remove"
+else
+echo "Attempting to remove template $3..."
+
+if [ -e "/vz/template/cache/$3.tar.gz" ]; then
+rm -rf /vz/template/cache/$3.tar.gz
+echo "Template removed."
+else
+echo "Template does not exist. Halting."
+fi
+
+fi
+
+else
+echo "Invalid action."
+echo "Usage: /sbin/containermanager templatemgr add/del tar_gz_location template_name / template_to_remove"
+fi
+
+fi
+;;
+
+checkconsole)
+if [ -z "$2" ]; then
+echo "Error: CTID not specified."
+echo "Usage: /sbin/containermanager checkconsole ctid"
+elif [ ! -f "/etc/vz/conf/$2.conf" ]; then
+echo "Container does not exist. Halting."
+else
+if [ -e "/srv/containers/$2/data" ]; then
+echo "1"
+else
+echo "0"
+fi
+fi
+;;
+
+retrieveconsole)
+if [ -z "$2" ]; then
+echo "Error: CTID not specified."
+echo "Usage: /sbin/containermanager checkconsole ctid"
+elif [ ! -f "/etc/vz/conf/$2.conf" ]; then
+echo "Container does not exist. Halting."
+else
+if [ -e "/srv/containers/$2/logindata" ]; then
+cat /srv/containers/$2/logindata
+else
+echo "0"
+fi
+fi
+
+;;
+
+serialconsole)
+if [ -z "$2" ]; then
+echo "Error: CTID not specified."
+echo "Usage: /sbin/containermanager serialconsole ctid 1/0"
+elif [ ! -f "/etc/vz/conf/$2.conf" ]; then
+echo "Container does not exist. Halting."
+else
+status=`/sbin/containermanager checkconsole $2`
+if [ "$3" == "1" ]; then
+if [ "$status" == "1" ]; then
+echo "Container already has a console session."
+else
+userid=`cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 5 | head -n 1`
+mkdir -p /srv/consoleusers/console-$userid
+password=`cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 10 | head -n 1`
+echo "Username: console-$userid"
+echo "Password: $password"
+useradd -m -d /srv/consoleusers/console-$userid -G consoleusers -s /sbin/vzshell -K MAIL_DIR=/dev/null console-$userid  &> /dev/null
+echo -e "$password\n$password" | /usr/bin/passwd console-$userid &> /dev/null
+echo "$2" > /srv/consoleusers/console-$userid/ctid
+usermod console-$userid -G consoleusers
+mkdir -p /srv/containers/$2
+echo "console-$userid" > /srv/containers/$2/data
+echo "Username: console-$userid" > /srv/containers/$2/logindata
+echo "Password: $password" >> /srv/containers/$2/logindata
+fi
+elif [ "$3" == "0" ]; then
+if [ "$status" == "0" ]; then
+echo "No session found for this container."
+else
+serial_user=`cat /srv/containers/$2/data`
+userdel $serial_user &> /dev/null
+rm -rf /srv/containers/$2/data
+rm -rf /srv/containers/$2/logindata
+rm -rf /srv/consoleusers/$serial_user
+echo "Serial console disabled."
+fi
+else
+echo "Error: Boolean value required."
+echo "Usage: /sbin/containermanager serialconsole ctid 1/0"
+fi
+fi
 ;;
 
 checktun)
@@ -223,12 +406,9 @@ ovzconfig=`cat /etc/vz/conf/$2.conf | grep 'IP_ADDRESS='`
 if [ ! -z "$ovzconfig" ]; then
 echo "Refusing to run as network settings have been previously modified."
 else
-echo "Adding $PRIV_IP.$2 as the private IPv4 address..."
-vzctl set $2 --ipadd $PRIV_IP.$2 --save
-echo "Adding $PUB_V6::$2 as the public IPv6 address..."
-vzctl set $2 --ipadd $PUB_V6::$2 --save
-echo "Setting up a NAT rule..."
-/sbin/nat $PRIV_IP.$2 $PORTPREFIX$2 22
+echo "Adding 10.42.1.$2 as the private IPv4 address..."
+natport=$(($2+20000))
+vzctl set $2 --ipadd 10.42.1.$2 --save
 echo "Success!"
 fi
 fi

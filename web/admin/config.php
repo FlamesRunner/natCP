@@ -1,3 +1,4 @@
 <?php
-require '../manager/config.php';
+require ('../config.php');
 ?>
+

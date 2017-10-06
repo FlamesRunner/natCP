@@ -1,3 +1,3 @@
 <?php
-header("Location: /manager");
+header("Location: https://prod1.andrew-hong.me/vpscp/manager");
 ?>

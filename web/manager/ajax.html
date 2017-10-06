@@ -1,0 +1,358 @@
+<?php
+session_start();
+include 'auth.php';
+include 'db.php';
+include 'functions.php';
+
+$getvpsnode = $dbh->prepare('SELECT * from virtualservers where ctid=:vserverid');
+$getvpsnode->bindParam(':vserverid', $_GET['vserver']);
+$getvpsnode->execute();
+$nodeinformation = $getvpsnode->fetch();
+$nodeid = $nodeinformation['nodeid'];
+$nodedetails = getNodeData($nodeid);
+
+if ($_GET['a']==='availabletemplates'){
+?>
+        <select name="newos" class="form-control" form="reinstallvps">
+        <?php
+        $templates = getTemplates($nodeid);
+        foreach($templates as $value) {
+        echo '<option value="'.$value.'">'.$value.'</option>';
+        }
+        ?>
+        </select>
+	<div style="padding-top: 10px;"></div>	
+        <input type="submit" class="btn btn-danger" value="Re-image virtual server">
+<?php
+}
+
+if($_GET['a']==='serverstatus') {
+if(status($_GET['vserver'], $nodeid)=="false") {
+echo '<span class="status-light sl-red"> </span> OFFLINE';
+} else {
+echo '<span class="status-light sl-green"> </span> ONLINE';
+}
+}
+
+if($_GET['a']==='listvps') {
+$ath = $dbh->prepare('SELECT * from virtualservers where owner=:owner');
+$ath->bindParam(':owner', $_SESSION['user_name']);
+$ath->execute();
+
+if ($ath->rowCount() > 0) {
+
+
+foreach ($ath as $row){
+echo '<div class="panel panel-default"><div class="panel-body">';
+
+$status = getPowerLevel($row["ctid"], $row["nodeid"]);
+
+echo ''. $status .' (CONTAINER ID: '. $row["ctid"] .')</a>';
+echo '<div class="grouped">';
+echo '<a href="manage.php?vserver='.$row["ctid"].'" class="btn btn-primary">Manage</a>';
+echo '</div></div></div>';
+}
+
+} else {
+echo '<div class="panel panel-danger"><div class="panel-body">';
+echo 'No virtual servers found.';
+echo '</div>';
+}
+}
+
+
+if($_GET['a']==='control') {
+$ath = $dbh->prepare('SELECT * from virtualservers where ctid=:ctid');
+$ath->bindParam(":ctid", $_GET['vserver']);
+$ath->execute();
+//$vpsinfo = $ath->fetch();
+
+//$getnodehostname = $dbh->prepare('SELECT * from nodes where id=:nodeid');
+//$getnodehostname->bindParam(':nodeid', $vpsinfo["nodeid"]);
+//$getnodehostname->execute()
+//$nodeinfo = $getnodehostname->fetch();
+
+if (!$ath->rowCount() > 0) {
+header('Location: /manager/listvps.php');
+die('Fatal Error');
+}
+
+if ($_GET['act'] == "retrieveconsole") {
+if(checkConsole($_GET['vserver'], $nodeid) == "enabled"){
+
+$getdetails = getConsoleDetails($_GET['vserver'], $nodeid);
+echo '<br /><br /><pre class="code">'.$getdetails.'</pre>';
+
+} else {
+
+}
+}
+
+if ($_GET['act'] == "toggleserialconsole"){
+if(checkConsole($_GET['vserver'], $nodeid) == "enabled"){
+$sessiondata = toggleSession($_GET['vserver'], $nodeid);
+?>
+<script type="text/javascript">
+$("#loading").modal("hide");
+$("#message").html("<h1>Serial console disabled.</h1><h4>You may now close the dialog :)</h4>");
+$("#messagemodal").modal("show");
+</script>
+<?php
+} else {
+$sessiondata = toggleSession($_GET['vserver'], $nodeid);
+echo '
+<script type="text/javascript">
+$("#loading").modal("hide");
+$("#message").html("<h1>Serial console enabled.</h1><h4>You may now close the dialog :)</h4>");
+$("#messagemodal").modal("show");
+</script>
+';
+}
+}
+
+if ($_GET['act'] == "serialconsole"){
+if(checkConsole($_GET['vserver'], $nodeid) == "enabled"){
+?>
+<a href="#" id="toggleconsole" class="btn btn-danger">Disable serial console</a>
+<?php
+} else {
+?>
+<a href="#" id="toggleconsole" class="btn btn-success">Enable serial console</a>
+<?php
+
+?>
+<script>
+$( "#toggleconsole" ).on( "click", function() {
+console.log('Toggle serial request...');
+$( "#whichaction" ).html( 'Toggling serial console...' );
+$('#loading').modal('show');
+$( "#hiddenres" ).load( "ajaxfunctions.php?a=control&vserver=<?php print($_GET['vserver']); ?>&act=toggleserialconsole" );
+$( "#serialdetails" ).load("ajaxfunctions.php?a=control&vserver=<?php print($_GET['vserver']); ?>&act=serialconsole" );
+$( "#console" ).load("ajaxfunctions.php?a=control&vserver=<?php print($_GET['vserver']); ?>&act=retrieveconsole" );
+
+});
+</script>
+<?php
+}
+
+if ($_GET['act'] == "start"){
+
+if(status($_GET['vserver'], $nodeid)=="true") {
+echo '
+
+<script type="text/javascript">
+$("#loading").modal("hide");
+$("#message").html("<h1>Error!</h1><h4>The server has already been started.");
+
+$("#messagemodal").modal("show");
+
+</script>
+
+
+';
+} else {
+
+$poweract = poweron($_GET['vserver'], $nodeid);
+echo '
+<script type="text/javascript">
+$("#loading").modal("hide");
+$("#message").html("<h1>Server Started.</h1><h4>You may now close the dialog :)");
+
+$("#messagemodal").modal("show");
+
+</script>
+
+';
+}
+
+} elseif ($_GET['act'] == "stop"){
+
+if(status($_GET['vserver'], $nodeid)=="false") {
+echo '
+
+<script type="text/javascript">
+$("#loading").modal("hide");
+$("#message").html("<h1>Error!</h1><h4>The server is already powered down.");
+
+$("#messagemodal").modal("show");
+
+</script>
+
+
+';
+} else {
+
+$poweract = poweroff($_GET['vserver'], $nodeid);
+echo '
+<script type="text/javascript">
+$("#loading").modal("hide");
+$("#message").html("<h1>Server Shut Down.</h1><h4>You may now close the dialog :)");
+
+$("#messagemodal").modal("show");
+
+</script>
+
+';
+}
+
+} elseif ($_GET['act'] == "restart") {
+if(status($_GET['vserver'], $nodeid)=="false") {
+exit('
+
+<script type="text/javascript">
+$("#loading").modal("hide");
+$("#message").html("<h1>Error!</h1><h4>The server needs to be online to restart.");
+
+$("#messagemodal").modal("show");
+
+</script>
+
+
+');
+} else {
+$poweract = reboot($_GET['vserver'], $nodeid);
+
+exit('
+<script type="text/javascript">
+$("#loading").modal("hide");
+$("#message").html("<h1>Server Restarted.</h1><h4>You may now close the dialog :)");
+
+$("#messagemodal").modal("show");
+
+</script>
+
+');
+}
+
+} elseif ($_GET['act'] == "resetpw") {
+$newpass = resetpass($_GET['vserver'], $nodeid);
+
+exit('
+<script type="text/javascript">
+$("#loading").modal("hide");
+$("#message").html("<h1>Welcome back.</h1><h4>Your new password is: <b>'. $newpass .'</b> :)");
+
+$("#messagemodal").modal("show");
+
+</script>
+
+');
+
+
+} elseif ($_GET['act'] == "reinstall" && !empty($_POST['os'])){
+
+$os = $_GET['os'];
+if ($os == "debian") {
+$dangeract = reinstall($_GET['vserver'], "debian-7", $nodeid);
+} elseif ($os == "ubuntu") {
+$dangeract = reinstall($_GET['vserver'], "ubuntu-15.04", $nodeid);
+} elseif ($os == "centos") {
+$dangeract = reinstall($_GET['vserver'], "centos-6", $nodeid);
+} else {
+$dangeract = 'fail';
+}
+
+}
+if($_GET['act']==='pass-status') {
+echo '<a class="btn btn-success resetpw">Reset Password</a>';
+}
+
+if($_GET['act']==='memory') {
+echo memoryusage($_GET['vserver'], $nodeid);
+}
+if($_GET['act']==='templates') {
+echo getos($_GET['vserver'], $nodeid);
+}
+if($_GET['act']==='disk') {
+echo getDisk($_GET['vserver'], $nodeid);
+}
+if($_GET['act']==='ipv4') {
+echo '107.170.221.184';
+}
+
+if($_GET['act']==='ipv6') {
+echo '2001:470:c:d42:0:1:1:'. $_GET['vserver'] .'';
+}
+
+if($_GET['act']==='toggle-tun') {
+if(checktun($_GET['vserver'], $nodeid) == 'off') {
+$tunrun = enabletun($_GET['vserver'], $nodeid);
+exit('
+<script type="text/javascript">
+$("#loading").modal("hide");
+$("#message").html("<h1>TUN/TAP has been enabled.</h1><h4>You may now close the dialog :)</h4>");
+$("#tunmsg").html("(TUN/TAP is enabled)");
+$("#tunslider").prop("checked", true);
+$("#messagemodal").modal("show");
+
+</script>
+
+');
+
+} else {
+$tunrun = disabletun($_GET['vserver'], $nodeid);
+exit('
+<script type="text/javascript">
+$("#loading").modal("hide");
+$("#message").html("<h1>TUN/TAP has been disabled.</h1><h4>You may now close the dialog :)</h4>");
+$("#tunmsg").html("(TUN/TAP is disabled)");
+$("#tunslider").prop("checked", false);
+$("#messagemodal").modal("show");
+
+</script>
+');
+
+
+}
+}
+if($_GET['act']==='netdetails') {
+?>
+<pre class="code">
+Shared IPv4 Address: <?php echo '107.170.221.184'; ?>
+
+IPv4 NAT Port: <?php echo 2000 + $_GET['vserver'] .''; ?>
+
+Dedicated IPv6: <?php echo '2001:470:c:d42:0:1:1:'. $_GET['vserver'] .''; ?>
+</pre>
+
+<?php
+}
+if($_GET['act']==='sshdetails') {
+?>
+<pre class="code">
+ssh root@107.170.221.184 -p <?php echo 2000 + $_GET['vserver'] .''; ?>
+</pre>
+<?php
+}
+if($_GET['act']==='tun-status') {
+if(checktun($_GET['vserver'], $nodeid) === 'on') {
+?>
+<script type="text/javascript">
+$("#tuncontrol").html('<div class="checkbox checkbox-slider--b-flat checkbox-slider-md tuntoggle"><label><input onclick="resetpass" id="tunslider" type="checkbox" checked=""><span id="tunmsg">(TUN/TAP is enabled)</label></div>');
+
+
+</script>
+<?php
+exit();
+} else {
+?>
+<script type="text/javascript">
+$("#tuncontrol").html('<div class="checkbox checkbox-slider--b-flat checkbox-slider-md"><label><input id="tunslider" type="checkbox"><span id="tunmsg">(TUN/TAP is disabled)</label></div>');
+
+
+</script>
+
+<?php
+exit();
+}
+}
+
+
+if($_GET['act']==='port') {
+echo '200'. $_GET['vserver'] .'';
+}
+
+
+}
+?>
+
