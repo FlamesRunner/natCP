@@ -30,7 +30,6 @@
          <li><a style="color:white;" href="/admin/usermanager.php">User Manager</a></li>
          <li><a style="color:white;" href="/admin/nodemanager.php">Node Manager</a>
          <li><a style="color:white;" href="/admin/templatemgr.php">Template Manager</a></li>
-         <li><a style="color:white;" href="/admin/networkmanager.php">Network Manager</a>
          <li><a style="color:white;" href="/manager">Return to userCP</a></li>
                <span id="navmsg"></span>
             </ul>
