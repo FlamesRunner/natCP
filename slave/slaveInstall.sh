@@ -25,6 +25,12 @@ cd /tmp && git clone https://github.com/FlamesRunner/natCP
 mv /tmp/natCP/slave /tmp/slave && rm -rf /tmp/natCP
 chmod 700 /tmp/slave/*
 mv /tmp/slave/* /sbin
+echo "-> Installing OpenVZ kernel"
+wget -P /etc/yum.repos.d/ https://download.openvz.org/openvz.repo
+rpm --import http://download.openvz.org/RPM-GPG-Key-OpenVZ
+yum install vzkernel -y
+echo "-> Installing OpenVZ tools"
+yum install vzctl vzquota ploop -y
 echo "-> Installation complete. Please wait while final configuration changes are made."
 newPassword=$(openssl rand -base64 32)
 useradd remote
