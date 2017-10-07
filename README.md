@@ -2,6 +2,11 @@
 
 A free open source OpenVZ panel.
 
+## Contributors
+
+- Myself (Andrew. H)
+- @doghouch for interface work (https://dawgy.pw)
+
 ## Screenshots
 
 Listing virtual servers from the administrator panel:
