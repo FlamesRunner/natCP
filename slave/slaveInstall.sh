@@ -38,6 +38,7 @@ mkdir -p /srv/consoleusers/
 mkdir -p /srv/containers
 groupadd consoleusers
 echo '%consoleusers ALL=NOPASSWD:/sbin/vzenter' >> /etc/sudoers
+sed -i 's/VE_LAYOUT=ploop/VE_LAYOUT=simfs/g' /etc/vz/vz.conf
 chmod 755 /sbin/vzenter
 echo -e "$newPassword\n$newPassword" | passwd remote
 echo 'remote ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
