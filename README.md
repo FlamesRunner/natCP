@@ -9,7 +9,7 @@ A free open source OpenVZ panel.
 ## Screenshots
 
 Listing virtual servers from the administrator panel:
-![](https://s.flamz.pw/img/92ad6ee5e62bdbc31e035f04bda88637.png)
+![](https://s.flamz.pw/img/00be973b8f5e286a476333addc27fa7e.png)
 
 Managing a virtual server as a standard user:
 ![](https://s.flamz.pw/img/17f029d8aaee5b10ac9c4b86f7be64e3.png)
