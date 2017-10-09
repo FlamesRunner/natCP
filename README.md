@@ -24,6 +24,8 @@ Log on as the root user, and execute the following command:
 
 That's it. Make sure you save the slave access key, though!
 
+Note: You will need to restart your system to enter with the OpenVZ kernel.
+
 ## Host node installation
 
 Host node installation is a little more complicated.
