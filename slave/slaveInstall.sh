@@ -36,6 +36,8 @@ newPassword=$(openssl rand -base64 32)
 useradd remote
 mkdir -p /srv/consoleusers/
 mkdir -p /srv/containers
+groupadd consoleusers
+echo '%consoleusers ALL=NOPASSWD:/sbin/vzenter' >> /etc/sudoers
 echo -e "$newPassword\n$newPassword" | passwd remote
 echo 'remote ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 echo "-> Slave node configured. Here are the slave details:"
