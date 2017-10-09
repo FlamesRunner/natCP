@@ -119,7 +119,7 @@ exit('System is under maintenance.');
 
 $create = trim($ssh->exec("/usr/bin/sudo /sbin/containermanager create ".$ctid." ".$os));
 $setIP = trim($ssh->exec("/usr/bin/sudo /usr/sbin/vzctl set " . $ctid . " --ipadd " . $ipaddress . " --save"));
-$reinstall = reinstall($ctid, $os, $nodeid);
+$reinstall = reinstall($ctid, $os, $ipaddress, $nodeid);
 return '1';
 
 }
@@ -411,7 +411,7 @@ return trim($ssh->exec('/usr/bin/sudo /sbin/containermanager restart ' . $ctid))
 }
 
 
-function reinstall($ctid, $os, $nodeid){
+function reinstall($ctid, $os, $ipaddress, $nodeid){
 include('db.php');
 
 $nodedata = getNodeData($nodeid);
@@ -426,7 +426,7 @@ exit('System is under maintenance.');
 $formattedos = str_replace(".tar.gz","",$os);
 
 $act = trim($ssh->exec('/usr/bin/sudo /sbin/containermanager reinstall ' . $ctid . ' ' . $formattedos));
-trim($ssh->exec('/usr/bin/sudo /sbin/containermanager net-init ' . $ctid));
+$setIP = trim($ssh->exec("/usr/bin/sudo /usr/sbin/vzctl set " . $ctid . " --ipadd " . $ipaddress . " --save"));
 
 return $act;
 
