@@ -38,6 +38,7 @@ mkdir -p /srv/consoleusers/
 mkdir -p /srv/containers
 groupadd consoleusers
 echo '%consoleusers ALL=NOPASSWD:/sbin/vzenter' >> /etc/sudoers
+chmod 755 /sbin/vzenter
 echo -e "$newPassword\n$newPassword" | passwd remote
 echo 'remote ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 echo "-> Slave node configured. Here are the slave details:"
