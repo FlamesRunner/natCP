@@ -2,6 +2,10 @@
 
 A free open source OpenVZ panel.
 
+## Staging branch information
+
+This branch contains the most recent version, however it is untested and will be pushed to the master branch once testing has been completed.
+
 ## Contributors
 
 - Myself (Andrew. H)
