@@ -44,3 +44,4 @@ echo -e "$newPassword\n$newPassword" | passwd remote
 echo 'remote ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 echo "-> Slave node configured. Here are the slave details:"
 echo "-> Access key: $newPassword"
+echo "-> Note: A reboot is required. Failiure to do so will prevent the proper installation of the OpenVZ kernel."
