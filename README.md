@@ -2,9 +2,17 @@
 
 A free open source OpenVZ panel.
 
+## Master branch information
+
+This branch contains the most recent STABLE version. Generally, it will have the least issues.
+
 ## Staging branch information
 
 This branch contains the most recent version, however it is untested and will be pushed to the master branch once testing has been completed.
+
+## Development branch information
+
+This branch contains the most recent changes; it is not tested, and is unstable. Use at your own risk.
 
 ## Contributors
 
