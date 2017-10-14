@@ -13,6 +13,7 @@ This branch contains the most recent version, however it is untested and will be
 ## Development branch information
 
 This branch contains the most recent changes; it is not tested, and is unstable. Use at your own risk.
+Pull requests should be created against this branch.
 
 ## Contributors
 
