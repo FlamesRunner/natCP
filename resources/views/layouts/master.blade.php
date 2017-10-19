@@ -35,8 +35,9 @@
 
 
 <body>
-
-@include('partials.nav')
+@if(!Auth::guest())
+    @include('partials.nav')
+@endif
 
 
 
