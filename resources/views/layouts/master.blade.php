@@ -21,6 +21,10 @@
     <link href="/assets/css/menu.css" rel="stylesheet" type="text/css" />
     <link href="/assets/css/responsive.css" rel="stylesheet" type="text/css" />
 
+    <link href="/plugins/datatables/jquery.dataTables.min.css" rel="stylesheet" type="text/css" />
+    <link href="/plugins/datatables/buttons.bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="/plugins/datatables/fixedHeader.bootstrap.min.css" rel="stylesheet" type="text/css" />
+
     <!-- HTML5 Shiv and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -66,23 +70,8 @@
 <script src="/assets/js/jquery.nicescroll.js"></script>
 <script src="/assets/js/jquery.scrollTo.min.js"></script>
 
-<!-- Counter Up  -->
-<script src="/plugins/waypoints/lib/jquery.waypoints.js"></script>
-<script src="/plugins/counterup/jquery.counterup.min.js"></script>
+@yield('scripts')
 
-<!-- circliful Chart -->
-<script src="/plugins/jquery-circliful/js/jquery.circliful.min.js"></script>
-<script src="/plugins/jquery-sparkline/jquery.sparkline.min.js"></script>
-
-<!-- skycons -->
-<script src="/plugins/skyicons/skycons.min.js" type="text/javascript"></script>
-
-<!-- Page js  -->
-<script src="/assets/pages/jquery.dashboard.js"></script>
-
-<!-- Custom main Js -->
-<script src="/assets/js/jquery.core.js"></script>
-<script src="/assets/js/jquery.app.js"></script>
 
 
 </body>

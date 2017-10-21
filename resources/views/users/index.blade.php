@@ -1,19 +1,64 @@
 @extends('layouts.master')
 
 @section('content')
+
     <div class="container">
         <div class="row">
-            <div class="col-md-8 col-md-offset-2">
-                <div class="panel panel-default">
-                    <div class="panel-heading">Dashboard</div>
+            <div class="col-sm-12">
+                <div class="card-box table-responsive">
 
-                    <div class="panel-body">
+                    <h4 class="m-t-0 header-title"><b>User List</b></h4>
+                    <p class="text-muted font-13 m-b-30">
+                        List of all users
+                    </p>
+
+                    <table id="datatable-fixed-header" class="table table-striped table-bordered">
+                        <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Permission</th>
+                        </tr>
+                        </thead>
+
+
+                        <tbody>
                         @foreach($users as $user)
-                         * {{$user->user_name}}
+                            <tr>
+                                <td><a href="/admin/users/{{$user->user_id}}">{{$user->user_name}}</a></td>
+                                <td>{{$user->user_email}}</td>
+                                <td>{{$user->permission_level}}</td>
+                            </tr>
                         @endforeach
-                    </div>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
+
     </div>
+
+
+
+@endsection
+
+
+
+@section('scripts')
+    <!-- Datatables-->
+    <script src="/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="/plugins/datatables/dataTables.bootstrap.js"></script>
+    <script src="/plugins/datatables/dataTables.fixedHeader.min.js"></script>
+
+
+    <script src="/assets/js/jquery.core.js"></script>
+    <script src="/assets/js/jquery.app.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var table = $('#datatable-fixed-header').DataTable( { fixedHeader: true } );
+        } );
+
+    </script>
+
 @endsection

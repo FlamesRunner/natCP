@@ -2,9 +2,11 @@
 
 
 namespace App\Services\User;
+
+
 use App\Repositories\User\UserRepository;
 
-class FindUserService
+class ModifyUserService
 {
 
     protected $userRepository;
@@ -14,14 +16,14 @@ class FindUserService
         $this->userRepository = $userRepository;
     }
 
-    public function all()
+    public function delete($id)
     {
-        return $this->userRepository->all();
+        return $this->userRepository->delete($id);
     }
 
-    public function id($id)
+    public function update($id, $data)
     {
-        return $this->userRepository->find($id);
+        return $this->userRepository->update($id, $data);
     }
 
 }
