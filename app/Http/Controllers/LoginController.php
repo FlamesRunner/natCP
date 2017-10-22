@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\LoginService;
+use App\Services\User\LoginService;
 use Illuminate\Http\Request;
 
 class LoginController extends Controller

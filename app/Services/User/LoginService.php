@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\User;
 
 use App\Repositories\User\UserRepository;
 use Illuminate\Foundation\Auth\RedirectsUsers;
