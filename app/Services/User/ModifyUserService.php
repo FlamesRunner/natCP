@@ -31,7 +31,6 @@ class ModifyUserService
             unset($data['password']);
         }
 
-
         return $this->userRepository->update($id, $data);
     }
 

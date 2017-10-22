@@ -15,7 +15,7 @@
                         </div>
                         <div class="form-group">
                             <label for="Username">Username</label>
-                            <input type="text" value="{{$user->user_name    }}" id="Username" name="user_name" class="form-control">
+                            <input type="text" value="{{$user->user_name}}" id="Username" name="user_name" class="form-control">
                         </div>
                         <div class="form-group">
                             <label for="Password">Password</label>
@@ -38,13 +38,23 @@
                             <h4 class="m-b-5">{{$user->user_name}}</h4>
                             <p class="text-muted">{{$user->user_email}}</p>
                         </div>
-                        @if($user->permission_level=='admin')
-                            <button type="button" class="btn btn-warning btn-sm w-sm waves-effect m-t-10 waves-light">Remove Admin</button>
-                        @else
-                            <button type="button" class="btn btn-primary btn-sm w-sm waves-effect m-t-10 waves-light">Make Admin</button>
-                        @endif
+                        <form method="post">
+                            {{csrf_field()}}
+                            <input type="hidden" name="_method" value="put"/>
+                            @if($user->permission_level=='admin')
+                                <button type="submit" class="btn btn-warning btn-sm w-sm waves-effect m-t-10 waves-light">Remove Admin</button>
+                                <input type="hidden" name="permission_level" value="member"/>
+                            @else
+                                <input type="hidden" name="permission_level" value="admin"/>
+                                <button type="submit" class="btn btn-primary btn-sm w-sm waves-effect m-t-10 waves-light">Make Admin</button>
+                            @endif
+                        </form>
+                        <form method="post">
+                            {{csrf_field()}}
+                            <input type="hidden" name="_method" value="delete"/>
+                            <button type="submit" class="btn btn-danger btn-sm w-sm waves-effect m-t-10 waves-light">Delete User</button    >
+                        </form>
 
-                        <button type="button" class="btn btn-danger btn-sm w-sm waves-effect m-t-10 waves-light">Delete User</button>
 
 
 

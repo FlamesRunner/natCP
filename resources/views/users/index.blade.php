@@ -5,13 +5,15 @@
     <div class="container">
         <div class="row">
             <div class="col-sm-12">
+                @if(isset($message))
+                    {{dd($message)}}
+                @endif
                 <div class="card-box table-responsive">
 
                     <h4 class="m-t-0 header-title"><b>User List</b></h4>
                     <p class="text-muted font-13 m-b-30">
                         List of all users
                     </p>
-
                     <table id="datatable-fixed-header" class="table table-striped table-bordered">
                         <thead>
                         <tr>
@@ -32,6 +34,7 @@
                         @endforeach
                         </tbody>
                     </table>
+                    <a class="btn btn-sm btn-primary waves-effect waves-light w-md" href="/admin/users/create" type="submit"><i class="fa fa-plus"></i> Add User</a>
                 </div>
             </div>
         </div>

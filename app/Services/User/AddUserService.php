@@ -4,6 +4,7 @@ namespace App\Services\User;
 
 use App\Repositories\User\UserRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 /**
  * Class AddUserService exclusively handles the adding of a new user
@@ -27,13 +28,19 @@ class AddUserService
     /**
      * Add a user to database and fire the user added event
      *
-     * @param Request $request
+     * @param $data
      */
-    public function addUser(Request $request)
+    public function addUser($data)
     {
-        // Validate data
 
-        $this->userRepository->create($request->all());
+        if(isset($data['password'])){
+            $data['user_password_hash'] = Hash::make($data['password']);
+            unset($data['password']);
+        }
+
+        $data['permission_level'] = 'member';
+
+        $this->userRepository->create($data);
 
         // Fire Event
     }
