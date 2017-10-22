@@ -21,8 +21,22 @@ class ModifyUserService
         return $this->userRepository->delete($id);
     }
 
+    public function changePassword($password,$re_password)
+    {
+        // validate passwords or remove if blank
+        if($data['password'] and ($data['password'] != $data['re_password'])){
+            return false;
+        }
+    }
+
+
+
     public function update($id, $data)
     {
+
+        unset($data['password']);
+        unset($data['re_password']);
+
         return $this->userRepository->update($id, $data);
     }
 
