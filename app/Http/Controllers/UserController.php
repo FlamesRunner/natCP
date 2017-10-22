@@ -45,16 +45,9 @@ class UserController extends Controller
     {
         $data = $request->all();
 
-
-        if($data['password']){
-            $this->modifyUserService->changePassword($data);
-            return redirect()->back()->withErrors(['msg', 'Passwords do not match']);
-        }
-
-
-
         $this->modifyUserService->update($id,$data);
 
+        return redirect()->back();
 
     }
 }

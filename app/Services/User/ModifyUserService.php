@@ -5,6 +5,7 @@ namespace App\Services\User;
 
 
 use App\Repositories\User\UserRepository;
+use Illuminate\Support\Facades\Hash;
 
 class ModifyUserService
 {
@@ -21,21 +22,15 @@ class ModifyUserService
         return $this->userRepository->delete($id);
     }
 
-    public function changePassword($password,$re_password)
-    {
-        // validate passwords or remove if blank
-        if($data['password'] and ($data['password'] != $data['re_password'])){
-            return false;
-        }
-    }
-
-
 
     public function update($id, $data)
     {
 
-        unset($data['password']);
-        unset($data['re_password']);
+        if(isset($data['password'])){
+            $data['user_password_hash'] = Hash::make($data['password']);
+            unset($data['password']);
+        }
+
 
         return $this->userRepository->update($id, $data);
     }
