@@ -6,6 +6,11 @@
         <div class="row">
             <div class="col-sm-6">
                 <div class="card-box">
+                    @if($errors->any())
+                        <div class="alert alert-danger">
+                            <i class="fa fa-exclamation-triangle"></i> {{$errors->first()}}
+                        </div>
+                    @endif
                     <form role="form" method="post" action="/admin/nodes">
                         {{csrf_field()}}
                         <div class="form-group">

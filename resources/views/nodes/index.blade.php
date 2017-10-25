@@ -5,15 +5,17 @@
     <div class="container">
         <div class="row">
             <div class="col-sm-12">
-                @if(isset($message))
-                    {{dd($message)}}
-                @endif
                 <div class="card-box table-responsive">
-
+                    @if(session()->has('message'))
+                        <div class="alert alert-success">
+                            {{ session()->get('message') }}
+                        </div>
+                    @endif
                     <h4 class="m-t-0 header-title"><b>Node Management</b></h4>
                     <p class="text-muted font-13 m-b-30">
                         List of all slave nodes
                     </p>
+
                     <table id="datatable-fixed-header" class="table table-striped table-bordered">
                         <thead>
                         <tr>

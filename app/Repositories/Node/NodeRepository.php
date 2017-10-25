@@ -13,4 +13,9 @@ class NodeRepository extends Repository
       $this->model = new Node();
   }
 
+  public function findByHostname($hostname)
+  {
+      $this->model->where('hostname', $hostname)->first();
+  }
+
 }

@@ -4,9 +4,11 @@ namespace App\Services\Node;
 
 
 use App\Repositories\Node\NodeRepository;
+use App\Traits\SSH;
 
 class AddNodeService
 {
+    use SSH;
     protected $nodeRepository;
 
     /**
@@ -24,13 +26,34 @@ class AddNodeService
      * Add a user to database and fire the user added event
      *
      * @param $data
+     * @return bool
      */
     public function addNode($data)
     {
 
+        if($this->checkLogin($data['hostname'], 'remote', $data['accesskey'])){
 
-        $this->nodeRepository->create($data);
+            if($this->checkHostExists($data['hostname'])){
+                $this->nodeRepository->create($data);
+                return true;
+            }else{
+                return false;
+            }
+
+        }else{
+            return false;
+        }
+
 
         // Fire Event
+    }
+
+    public function checkHostExists($hostname)
+    {
+        if($this->nodeRepository->findByHostname($hostname)){
+            return true;
+        }else{
+            return false;
+        }
     }
 }

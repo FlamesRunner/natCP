@@ -43,9 +43,13 @@ class NodeController extends Controller
     {
         $data = $request->all();
 
-        $addNodeService->addNode($data);
+        if(!$addNodeService->addNode($data)){
+            return back()->withErrors(['Could not add node']);
+        }else{
+            return redirect('/admin/nodes')->with(['message' => 'Node created Successfully']);
+        }
 
-        return redirect('/admin/nodes');
+
     }
 
 
