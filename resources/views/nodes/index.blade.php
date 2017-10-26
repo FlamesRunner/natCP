@@ -5,36 +5,36 @@
     <div class="container">
         <div class="row">
             <div class="col-sm-12">
-                @if(isset($message))
-                    {{dd($message)}}
-                @endif
                 <div class="card-box table-responsive">
-
-                    <h4 class="m-t-0 header-title"><b>User Management</b></h4>
+                    @if(session()->has('message'))
+                        <div class="alert alert-success">
+                            {{ session()->get('message') }}
+                        </div>
+                    @endif
+                    <h4 class="m-t-0 header-title"><b>Node Management</b></h4>
                     <p class="text-muted font-13 m-b-30">
-                        List of all users
+                        List of all slave nodes
                     </p>
+
                     <table id="datatable-fixed-header" class="table table-striped table-bordered">
                         <thead>
                         <tr>
-                            <th>Username</th>
-                            <th>Email</th>
-                            <th>Permission</th>
+                            <th>Hostname</th>
+                            <th>Access Key</th>
                         </tr>
                         </thead>
 
 
                         <tbody>
-                        @foreach($users as $user)
+                        @foreach($nodes as $node)
                             <tr>
-                                <td><a href="/admin/users/{{$user->user_id}}">{{$user->user_name}}</a></td>
-                                <td>{{$user->user_email}}</td>
-                                <td>{{$user->permission_level}}</td>
+                                <td><a href="/admin/nodes/{{$node->id}}">{{$node->hostname}}</a></td>
+                                <td>{{$node->accesskey}}</td>
                             </tr>
                         @endforeach
                         </tbody>
                     </table>
-                    <a class="btn btn-sm btn-primary waves-effect waves-light w-md" href="/admin/users/create" type="submit"><i class="fa fa-plus"></i> Add User</a>
+                    <a class="btn btn-sm btn-primary waves-effect waves-light w-md" href="/admin/nodes/create" type="submit"><i class="fa fa-plus"></i> Add Node</a>
                 </div>
             </div>
         </div>
