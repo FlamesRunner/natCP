@@ -33,7 +33,7 @@ class AddNodeService
 
         if($this->checkLogin($data['hostname'], 'remote', $data['accesskey'])){
 
-            if($this->checkHostExists($data['hostname'])){
+            if($this->checkNodeExists($data['hostname'])){
                 $this->nodeRepository->create($data);
                 return true;
             }else{
@@ -44,11 +44,9 @@ class AddNodeService
             return false;
         }
 
-
-        // Fire Event
     }
 
-    public function checkHostExists($hostname)
+    public function checkNodeExists($hostname)
     {
         if($this->nodeRepository->findByHostname($hostname)){
             return true;

@@ -3,9 +3,11 @@
 namespace App\Services\Node;
 
 use App\Repositories\Node\NodeRepository;
+use App\Traits\SSH;
 
 class ManageNodeService
 {
+    use SSH;
     protected $nodeRepository;
 
     public function __construct(NodeRepository $nodeRepository)
