@@ -1,6 +1,6 @@
 # natCP
 
-A free open source OpenVZ panel.
+A free open source OpenVZ panel. Currently not being maintained, but a version for OpenVZ 7/LXC is planned.
 
 ## Master branch information
 
