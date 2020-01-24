@@ -2,6 +2,8 @@
 
 A free open source OpenVZ panel. Currently not being maintained, but a version for OpenVZ 7/LXC is planned.
 
+The new version is currently in development, and is at https://github.com/FlamesRunner/containerCP
+
 ## Master branch information
 
 This branch contains the most recent STABLE version. Generally, it will have the least issues.
